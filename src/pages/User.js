@@ -7,7 +7,6 @@ import UserEdit from './UserEdit'
 const Users = () => {
 
     const [users, setUsers] = useState([]);
-    const [loadUsers, setLoadUsers] = useState(true);
     const [create, setCreate] = useState(false);
     const [edit, setEdit] = useState(-1);
 
@@ -23,12 +22,15 @@ const Users = () => {
     function formatmoney(money) {
         var m = money.toString()
         var rst = '';
-        for(var i=0; i<m.length;i++) {
-            if ((i+1)%3===0)
-                rst+='.'
+        if (money.toString().length<4)
+            return money
+        for(var i=m.length-1; i>=0;i--) {
             rst+=m[i]
+            if ((m.length-(i))%3===0 && i!==0) {
+                rst+='.'
+            }
         }
-        return rst
+        return rst.split('').reverse().join('')
     }
 
     function deleteuser(id) {
@@ -52,8 +54,8 @@ const Users = () => {
 
     return (
         <div className="">
-            <button type="button" className="btn btn-secondary mr-1" onClick={() => {setCreate(true); setEdit(-1)}}>Crear Usuario</button>
-            <button type="button" className="btn btn-primary ml-1" onClick={() => {setCreate(false); setEdit(-1)}}>Ver Usuarios</button>
+            <button type="button" className="btn btn-secondary mr-1 col-md-5" onClick={() => {setCreate(true); setEdit(-1)}}>Crear Usuario</button>
+            <button type="button" className="btn btn-primary ml-1 col-md-5" onClick={() => {setCreate(false); setEdit(-1)}}>Ver Usuarios</button>
             <div className="mb-4"></div>
             {
                 edit!==-1 ?

@@ -2,6 +2,8 @@ import React, {useState,useEffect} from 'react'
 import axios from 'axios'
 import {API_BASE} from '../actions/constants'
 
+const MIN_BET = 1000
+
 const Game = () => {
 
     const [load, setLoad] = useState(false);
@@ -36,7 +38,27 @@ const Game = () => {
         }, 1000);
     }
 
+    function payBets(bets) {
+        var random = Math.round(Math.random() * 3)
+        random = random===1 ? 'red' : random===2 ? 'green' : 'black'
+        bets = bets.filter(bet => bet.mode===random).forEach(bet => {
+            var amount = random==='green' ? bet.amount*10:bet.amount*2
+            bet.amount = amount
+        });
+        setTimeout(() => {
+            axios.get(API_BASE+"/users/").then(res => {
+                bets.forEach(x => {
+                    var u = res.data.find(y => y._id==x.id)
+                    u.money+=x.amount
+                    axios.put(API_BASE+"/users/"+u._id,u)
+                })
+            })
+        },500)
+
+    }
+
     function reload() {
+        payBets(bets)
         window.location.reload()
     }
     
@@ -46,15 +68,57 @@ const Game = () => {
         startTimer(minutes, display);
     };
 
-    function bet() {
-        console.log("hoee")
+    function checkFileds(bet) {
+        var color = bet.mode==='red' || bet.mode==='green' || bet.mode==='black'
+        if ( isNaN(bet.id) || isNaN(bet.amount) || !color)
+            return false
+        return true
+    }
+
+    function showMessage(message, time) {
+        setMessage(message)
+        setTimeout(() => setMessage(''),time)
+    }
+
+    function betFunction() {
+        var doc = document.getElementById('user')
+        var doc2 = document.getElementById('mode')
+        var bet = {
+            id: doc.childNodes[doc.selectedIndex].value,
+            amount: document.getElementById('bet').value,
+            mode: doc2.childNodes[doc2.selectedIndex].value
+        }
+        if (checkFileds(bet)) {
+            axios.get(API_BASE+"/users/"+bet.id).then(response => {
+                var user = response.data
+                if (response.status===200 && user) {
+                    if (user.money>MIN_BET) {
+                        bet.amount = (user.money*bet.amount)/100
+                    }else {
+                        if (user.money>0) {
+                            bet.amount = user.money
+                            showMessage('Advertencia: Se apostara ALL IN [MIN: '+MIN_BET+']',3000)
+                        } else
+                            showMessage('Error: no tiene fondos suficientes [dinero: '+user.money+']',3000)
+                    }
+                } else {
+                    showMessage('Error: no se encontro usuario. Verifique id ['+bet.id+']',3000)
+                }
+            }).then(() => {
+                if (bet.amount>100) {
+                    setBets(prev => [...prev, bet])
+                }
+            })
+        }else {
+            showMessage('Error: hay campos incorrectos ',3000)
+        }
     }
 
     return (
         <div className="container mt-3 pt-2 pb-2" style={{background:"gainsboro"}}>
             {
                 message ? 
-                <div class="alert alert-danger" role="alert">
+                <div id="messagePropmt" className="alert alert-danger" role="alert">
                     {message}
                 </div>
                 :''
@@ -69,7 +133,7 @@ const Game = () => {
             </div>
             <br></br>
             <div className="control-group">
-                <label className="control-label"  htmlFor="bet">Cantidad de apuesta</label>
+                <label className="control-label"  htmlFor="bet">Cantidad de apuesta %</label>
                 <div className="controls">
                     <input type="number" id="bet" name="bet" placeholder="min:11 - max:19" autoComplete="off" className="col-10" required min="11" max="19" step="0.1" defaultValue="11"/>
                 </div>
@@ -86,7 +150,7 @@ const Game = () => {
             </div>
             <br></br>
             <div>
-                <button type="button" class="btn btn-info" onClick={() => bet()}>Apostar</button>
+                <button type="button" className="btn btn-info" onClick={() => betFunction()}>Apostar</button>
             </div>
             <br></br>
             <div className="col-12">

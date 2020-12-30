@@ -53,7 +53,7 @@ class UserEdit extends Component {
                         <div className="control-group">
                         <label className="control-label"  htmlFor="_id">Número de identificación</label>
                         <div className="controls">
-                            <input type="number" id="_id" name="_id" placeholder="" defaultValue={this.user._id} autoComplete="off" className="col-10" required/>
+                            <input type="number" id="_id" name="_id" placeholder="" disabled defaultValue={this.user._id} autoComplete="off" className="col-10" required/>
                         </div>
                         </div>
 
