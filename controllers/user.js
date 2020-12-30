@@ -83,3 +83,22 @@ exports.update = function (req, res, next) {
         res.send("User ["+user._id+"] updated successfully")
     })
 }
+
+exports.from = function (req, res, next) {
+    let from = parseInt(req.params.from);
+    if (isNaN(from)) {
+        res.status(400).json({error:400,message:"FROM not a number"})
+        return
+    }
+    User.find({},{}).skip(from).limit(10).then((users, err) => {
+        if (err) {
+            res.status(500)
+            return next(err)
+        }
+        if (users.length===0)
+            res.status(204).json(users)
+        else
+            res.status(200).json(users)
+    })
+        
+}
