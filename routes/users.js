@@ -3,7 +3,7 @@ var router = express.Router();
 var user_controller = require("../controllers/user");
 
 router.get('/', user_controller.index);
-router.get('/:from', user_controller.from);
+router.get('/skip/:from', user_controller.from);
 router.post('/', user_controller.create);
 router.get('/:id', user_controller.show);
 router.delete('/:id', user_controller.delete);
