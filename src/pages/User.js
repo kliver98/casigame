@@ -2,11 +2,13 @@ import React, {useState,useEffect} from 'react'
 import axios from 'axios'
 import {API_BASE} from '../actions/constants'
 import UserCreate from './UserCreate'
+import UserEdit from './UserEdit'
 
 const Users = () => {
 
     const [users, setUsers] = useState([]);
     const [create, setCreate] = useState(false);
+    const [edit, setEdit] = useState(-1);
 
     useEffect(() => {
         axios.get(API_BASE+"/users").then(response => {
@@ -32,10 +34,6 @@ const Users = () => {
         axios.delete(API_BASE+"/users/"+id)
     }
 
-    function edituser(id) {
-
-    }
-
     function returnrow(username, id, money) {
         var pointer = {cursor: "pointer"}
         return (
@@ -44,7 +42,7 @@ const Users = () => {
                 <td>{username}</td>
                 <td>$ {formatmoney(money)}</td>
                 <td>
-                    <i className="fas fa-user-edit mr-2" style={pointer} onClick={() => edituser(id)}></i>
+                    <i className="fas fa-user-edit mr-2" style={pointer} onClick={() => setEdit(id)}></i>
                     <i className="fas fa-user-minus" style={pointer} onClick={() => deleteuser(id)}></i>
                 </td>
             </tr>
@@ -53,11 +51,16 @@ const Users = () => {
 
     return (
         <div className="">
-            <button type="button" className="btn btn-secondary mr-1" onClick={() => setCreate(true)}>Crear Usuario</button>
-            <button type="button" className="btn btn-primary ml-1" onClick={() => setCreate(false)}>Ver Usuarios</button>
+            <button type="button" className="btn btn-secondary mr-1" onClick={() => {setCreate(true); setEdit(-1)}}>Crear Usuario</button>
+            <button type="button" className="btn btn-primary ml-1" onClick={() => {setCreate(false); setEdit(-1)}}>Ver Usuarios</button>
             <div className="mb-4"></div>
             {
-                users.length>0 && !create ? 
+                edit!==-1 ?
+                <UserEdit id={edit}></UserEdit>
+                : ''
+            }
+            {
+                users.length>0 && !create && edit===-1 ? 
                 <table className="table bg-info">
                     <thead>
                         <tr>
