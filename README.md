@@ -19,7 +19,7 @@ Clone the project and change to branch backend <br>
 > To make sure, install dependencies with <code>yarn install</code> or <code>npm install</code>
 <br>
 Build the image<br>
-<code>docker build -t kliver98/casigame</code>
+<code>docker build -t kliver98/casigame .</code>
 <br>
 Run the image<br>
 <code>docker run -d -p 80:3000 kliver98/casigame</code>
