@@ -6,6 +6,8 @@ const Game = () => {
 
     const [load, setLoad] = useState(false);
     const [users, setUsers] = useState([]);
+    const [message, setMessage] = useState('');
+    const [bets, setBets] = useState([]);
 
     useEffect(() => {
         axios.get(API_BASE+"/users").then(response => {
@@ -27,9 +29,9 @@ const Game = () => {
     
             display.textContent = minutes + ":" + seconds;
     
-            if (--timer < 0) {
+            if (--timer < 0) { //When time it's over
                 timer = duration;
-                setLoad(true)
+                setLoad(!load)
             }
         }, 1000);
     }
@@ -44,14 +46,21 @@ const Game = () => {
         startTimer(minutes, display);
     };
 
-    function bet(id, amount, mode) {
-        
+    function bet() {
+        console.log("hoee")
     }
 
     return (
         <div className="container mt-3 pt-2 pb-2" style={{background:"gainsboro"}}>
+            {
+                message ? 
+                <div class="alert alert-danger" role="alert">
+                    {message}
+                </div>
+                :''
+            }
             <div className="col-12">
-                <select className="form-select" aria-label="Select user">
+                <select className="form-select" id="user" aria-label="Select user">
                 <option defaultValue>Seleccione usuario</option>
                 {
                     users.map(user => {return (<option value={user._id} key={user._id}>{user.username+" - "+user._id}</option>)})
@@ -68,7 +77,7 @@ const Game = () => {
             <div className="control-group">
                 <label className="control-label"  htmlFor="betMode">Modo apuesta</label>
                 <div className="controls">
-                    <select className="form-select" aria-label="Color">
+                    <select className="form-select" id="mode" aria-label="Color">
                     <option value="green">Verde - 1%</option>
                     <option value="red">Rojo - 49.5%</option>
                     <option value="black">Negro - 49.5%</option>
@@ -77,7 +86,7 @@ const Game = () => {
             </div>
             <br></br>
             <div>
-                <button type="button" class="btn btn-info">Apostar</button>
+                <button type="button" class="btn btn-info" onClick={() => bet()}>Apostar</button>
             </div>
             <br></br>
             <div className="col-12">

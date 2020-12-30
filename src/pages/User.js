@@ -18,7 +18,6 @@ const Users = () => {
         }
       }
         );
-        console.log("Hola")
       }, [create,edit]);
 
     function formatmoney(money) {
