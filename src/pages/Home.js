@@ -23,10 +23,8 @@ const Home = () => {
                         }
                     </div>
                 </div>
-                <div className="col-4 text-center bg-secondary">
-                    <h2>Gestión usuarios</h2>
-                    <br></br>
-                    <br></br>
+                <div className="col-4 text-center">
+                    <h2>Gestión de usuarios</h2>
                     <br></br>
                     <User></User>
                 </div>
