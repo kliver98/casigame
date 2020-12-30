@@ -1,0 +1,14 @@
+export const LOGIN = "Iniciar sesión";
+export const LOGOUT = "Cerrar sesión";
+export const UPDATE_DEPENDENCY = "Editar dependencia";
+export const DELETE_DEPENDENCY = "Eliminar dependencia";
+export const UPDATE_USER = "Editar usuario";
+export const DELETE_USER = "Eliminar usuario";
+export const PASSWORD = "Contraseña";
+export const USER = "Correo";
+export const MESSAGE = "Mensaje";
+export const SEARCH = "Buscar";
+export const BASE = "/auth-system-react/";
+export const SET_USER = "setUser";
+export const GET_DEPENDENCIES = "getDependencies";
+export const CREATE_DEPENDENCY = "Crear Dependencia";
