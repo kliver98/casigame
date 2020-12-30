@@ -28,8 +28,8 @@ app.use(function (req, res, next) {
   res.setHeader('Access-Control-Allow-Credentials', false);
   next();
 });
-app.use('/api/user', usersRouter);
-app.use('/api/game', gameRouter);
+app.use('/api/users', usersRouter);
+app.use('/api/games', gameRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
