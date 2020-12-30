@@ -2,9 +2,14 @@ const User = require('../models/users')
 
 exports.index = function (req, res, next) {
     User.find({}, (err, users) => {
-        if (err)
+        if (err) {
+            res.status(500)
             return next(err)
-        res.send(users);
+        }
+        if (users.length===0)
+            res.status(204).json(users)
+        else
+            res.status(200).json(users)
     })
 }
 
@@ -22,21 +27,39 @@ exports.create = function(req, res, next) {
     user.save(err => {
         if (err)
             return next(err)
+        res.status(201)
         res.send("User ["+user._id+"] created successfully")
     })
 }
 
 exports.show = function (req, res, next) {
     let id = req.params.id;
+    if (isNaN(id)) {
+        res.status(400).json({error:400,message:"ID not a number"})
+        return
+    }
     User.findById(id, (err, user) => {
         if (err)
             return next(err)
-        res.send(user)
+        if (user===undefined || user===null)
+            res.status(204).send(user)
+        else
+            res.status(200).send(user)
     })
 }
 
 exports.delete = function (req, res, next) {
-    User.findByIdAndRemove(req.params.id, (err, user) => {
+    var id = req.params.id
+    if (isNaN(id)) {
+        res.status(400).json({error:400,message:"ID not a number"})
+        return
+    }
+    User.findByIdAndRemove(id, (err, user) => {
+        if (user===undefined || user===null) {
+            res.send({error:204,message:"Not user found with id: "+id})
+            res.status(204)
+            return
+        }
         if (err)
             return next(err)
         res.send("User ["+user._id+"] deleted successfully")
@@ -44,7 +67,17 @@ exports.delete = function (req, res, next) {
 }
 
 exports.update = function (req, res, next) {
-    User.findByIdAndUpdate(req.params.id, {$set: req.body}, (err, user) => {
+    var id = req.params.id
+    if (isNaN(id)) {
+        res.status(400).json({error:400,message:"ID not a number"})
+        return
+    }
+    User.findByIdAndUpdate(id, {$set: req.body}, (err, user) => {
+        if (user===undefined || user===null) {
+            res.send({error:204,message:"Not user found with id: "+id})
+            res.status(204)
+            return
+        }
         if (err)
             return next(err)
         res.send("User ["+user._id+"] updated successfully")

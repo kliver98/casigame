@@ -2,10 +2,14 @@ const Game = require('../models/game')
 
 exports.index = function (req, res, next) {
     Game.find({}, (err, games) => {
-        if (err)
+        if (err) {
+            res.status(500)
             return next(err)
-        res.status(200)
-        res.send(games);
+        }
+        if (games.length===0)
+            res.status(204).json(games)
+        else
+            res.status(200).json(games)
     })
 }
 
@@ -27,15 +31,19 @@ exports.create = function(req, res, next) {
 
 exports.show = function (req, res, next) {
     let from = parseInt(req.params.from);
-    Game.find({},{}).skip(from).limit(10).then((resp, err) => {
+    if (isNaN(from)) {
+        res.status(400).json({error:400,message:"FROM not a number"})
+        return
+    }
+    Game.find({},{}).skip(from).limit(10).then((games, err) => {
         if (err) {
             res.status(500)
             return next(err)
         }
-        if (resp.length===0)
-            res.status(204).json(resp)
+        if (games.length===0)
+            res.status(204).json(games)
         else
-            res.status(200).json(resp)
+            res.status(200).json(games)
     })
         
 }
