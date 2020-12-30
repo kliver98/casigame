@@ -4,7 +4,7 @@ import {API_BASE} from '../actions/constants'
 
 const Game = () => {
 
-    const [load, setLoad] = useState(true);
+    const [load, setLoad] = useState(false);
     const [users, setUsers] = useState([]);
 
     useEffect(() => {
@@ -15,6 +15,38 @@ const Game = () => {
       }
         );
       }, [load]);
+
+    function startTimer(duration, display) {
+        var timer = duration, minutes, seconds;
+        setInterval(function () {
+            minutes = parseInt(timer / 60, 10);
+            seconds = parseInt(timer % 60, 10);
+    
+            minutes = minutes < 10 ? "0" + minutes : minutes;
+            seconds = seconds < 10 ? "0" + seconds : seconds;
+    
+            display.textContent = minutes + ":" + seconds;
+    
+            if (--timer < 0) {
+                timer = duration;
+                setLoad(true)
+            }
+        }, 1000);
+    }
+
+    function reload() {
+        window.location.reload()
+    }
+    
+    window.onload = function () {
+        var minutes = 60 * 3,
+            display = document.querySelector('#time');
+        startTimer(minutes, display);
+    };
+
+    function bet(id, amount, mode) {
+        
+    }
 
     return (
         <div className="container mt-3 pt-2 pb-2" style={{background:"gainsboro"}}>
@@ -42,6 +74,18 @@ const Game = () => {
                     <option value="black">Negro - 49.5%</option>
                     </select>
                 </div>
+            </div>
+            <br></br>
+            <div>
+                <button type="button" class="btn btn-info">Apostar</button>
+            </div>
+            <br></br>
+            <div className="col-12">
+                <h5>Siguiente juego automático en: </h5>
+                <h5 id="time">###</h5>
+                {
+                    load ? reload():''
+                }
             </div>
         </div>
     )
