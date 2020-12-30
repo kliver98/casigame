@@ -8,7 +8,7 @@ const Home = () => {
             <div className="row">
                 <div className="col-8 text-center">
                     <div className="row">
-                        <div className="col-12 bg-primary">
+                        <div className="col-12">
                         <h2>Juego</h2>
                         <br></br>
                         <br></br>

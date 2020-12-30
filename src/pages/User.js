@@ -7,6 +7,7 @@ import UserEdit from './UserEdit'
 const Users = () => {
 
     const [users, setUsers] = useState([]);
+    const [loadUsers, setLoadUsers] = useState(true);
     const [create, setCreate] = useState(false);
     const [edit, setEdit] = useState(-1);
 
@@ -17,7 +18,8 @@ const Users = () => {
         }
       }
         );
-      });
+        console.log("Hola")
+      }, [create,edit]);
 
     function formatmoney(money) {
         var m = money.toString()
@@ -37,7 +39,7 @@ const Users = () => {
     function returnrow(username, id, money) {
         var pointer = {cursor: "pointer"}
         return (
-            <tr>
+            <tr key={id}>
                 <th scope="row">{id}</th>
                 <td>{username}</td>
                 <td>$ {formatmoney(money)}</td>
