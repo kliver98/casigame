@@ -1,16 +1,23 @@
-import { SET_USER } from '../actions/constants';
+import { GET_USERS, SET_USERS } from '../actions/constants';
 
 let defaultState = {
-    fullname: '',
-    email: '',
-    rol: '',
+    users: [],
 }
 
+function newState(state, payload) {
+    return {
+      ...state,
+      payload,
+    };
+  }
+  
 
 function reducer(state = defaultState, { type, payload}) {
     switch (type) {
-        case SET_USER:
-            return defaultState;
+        case GET_USERS:
+            return newState(state, payload);
+        case SET_USERS:
+            return payload
         default:
             return state;
     }

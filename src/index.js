@@ -3,13 +3,21 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import routes from "./routes";
 import { Provider } from 'react-redux'
+import user from './reducers/user'
 import store from './redux/store'
 import { BrowserRouter as Router } from "react-router-dom";
 import reportWebVitals from './reportWebVitals';
+import { createStore, applyMiddleware, combineReducers } from 'redux';
+import ReduxPromise from 'redux-promise';
+
+const reducer = combineReducers({
+  user
+});
+
+const createStoreWithMiddleware = applyMiddleware(ReduxPromise)(createStore);
 
 ReactDOM.render(
-  <Provider store={store}>
-    {console.log(store.getState())}
+  <Provider store={createStoreWithMiddleware(reducer)}>
     <Router>{routes}</Router>
   </Provider>,
   document.getElementById('root')

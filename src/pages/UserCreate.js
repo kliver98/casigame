@@ -82,6 +82,7 @@ class UserCreate extends Component {
         axios.post(API_BASE+"/users",user).then(resp => {
             if (resp.status===200 || resp.status===201) {
                 document.getElementById("message").innerHTML = "<span style='color:green;'>Creado correctamente</span>";
+                this.props.reload();
                 return
             }
                 

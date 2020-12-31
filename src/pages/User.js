@@ -1,23 +1,14 @@
-import React, {useState,useEffect} from 'react'
+import React, {useState} from 'react'
 import axios from 'axios'
 import {API_BASE} from '../actions/constants'
 import UserCreate from './UserCreate'
 import UserEdit from './UserEdit'
 
-const Users = () => {
+const Users = (props) => {
 
-    const [users, setUsers] = useState([]);
+    let {users,reload} = props
     const [create, setCreate] = useState(false);
     const [edit, setEdit] = useState(-1);
-
-    useEffect(() => {
-        axios.get(API_BASE+"/users").then(response => {
-        if (response.status === 200) {
-            setUsers(response.data);
-        }
-      }
-        );
-      }, [create,edit]);
 
     function formatmoney(money) {
         var m = money.toString()
@@ -34,7 +25,7 @@ const Users = () => {
     }
 
     function deleteuser(id) {
-        axios.delete(API_BASE+"/users/"+id)
+        axios.delete(API_BASE+"/users/"+id).then(() => reload())
     }
 
     function returnrow(username, id, money) {
@@ -45,7 +36,7 @@ const Users = () => {
                 <td>{username}</td>
                 <td>$ {formatmoney(money)}</td>
                 <td>
-                    <i className="fas fa-user-edit mr-2" style={pointer} onClick={() => setEdit(id)}></i>
+                    <i className="fas fa-user-edit mr-2" style={pointer} onClick={() => {reload(); setEdit(id)}}></i>
                     <i className="fas fa-user-minus" style={pointer} onClick={() => deleteuser(id)}></i>
                 </td>
             </tr>
@@ -54,8 +45,8 @@ const Users = () => {
 
     return (
         <div className="">
-            <button type="button" className="btn btn-secondary mr-1 col-md-5" onClick={() => {setCreate(true); setEdit(-1)}}>Crear Usuario</button>
-            <button type="button" className="btn btn-primary ml-1 col-md-5" onClick={() => {setCreate(false); setEdit(-1)}}>Ver Usuarios</button>
+            <button type="button" className="btn btn-secondary mr-1 col-md-5" onClick={() => {reload(); setCreate(true); setEdit(-1)}}>Crear Usuario</button>
+            <button type="button" className="btn btn-primary ml-1 col-md-5" onClick={() => {reload(); setCreate(false); setEdit(-1)}}>Ver Usuarios</button>
             <div className="mb-4"></div>
             {
                 edit!==-1 ?
@@ -79,7 +70,7 @@ const Users = () => {
                     <tbody>
                     </tbody>
                 </table>
-                : !create ? 'No hay usuarios para mostrar':<UserCreate></UserCreate>
+                : !create ? 'No hay usuarios para mostrar':<UserCreate reload={reload}></UserCreate>
             }
         </div>
     )

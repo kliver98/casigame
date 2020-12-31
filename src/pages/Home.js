@@ -1,8 +1,29 @@
-import React from 'react'
+import React, {useEffect, useState} from 'react'
 import User from './User'
 import Game from './Game'
+import {API_BASE} from '../actions/constants'
+import axios from 'axios'
 
 const Home = () => {
+
+    const [users,setUsers] = useState([]);
+    const [reload,setReload] = useState(Date.now);
+
+    useEffect(() => {
+        console.log("Hola")
+        axios.get(API_BASE+"/users").then(response => {
+            if (response.status === 200) {
+                setUsers(response.data);
+            }
+          }
+            );
+    },[reload]);
+
+    function changeReload() {
+        console.log("jlklk")
+        setReload(Date.now)
+    }
+
     return (
         <div className="pl-4 pr-4 pt-3">
             <div className="row">
@@ -13,7 +34,7 @@ const Home = () => {
                         <br></br>
                         <br></br>
                         <br></br>
-                        <Game></Game>
+                        <Game users={users} reload={changeReload}></Game>
                         </div>
                         {
                             false ? 
@@ -26,7 +47,7 @@ const Home = () => {
                 <div className="col-5 text-center">
                     <h2>Gestión de usuarios</h2>
                     <br></br>
-                    <User></User>
+                    <User users={users} reload={changeReload}></User>
                 </div>
             </div>
         </div>

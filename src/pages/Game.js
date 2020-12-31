@@ -1,24 +1,13 @@
-import React, {useState,useEffect} from 'react'
+import React, {useState} from 'react'
 import axios from 'axios'
-import {API_BASE} from '../actions/constants'
+import {API_BASE,MIN_BET} from '../actions/constants'
 
-const MIN_BET = 1000
+const Game = (props) => {
 
-const Game = () => {
-
+    let {users,reload} = props
     const [load, setLoad] = useState(false);
-    const [users, setUsers] = useState([]);
     const [message, setMessage] = useState('');
     const [bets, setBets] = useState([]);
-
-    useEffect(() => {
-        axios.get(API_BASE+"/users").then(response => {
-        if (response.status === 200) {
-            setUsers(response.data);
-        }
-      }
-        );
-      }, [load]);
 
     function startTimer(duration, display) {
         var timer = duration, minutes, seconds;
@@ -48,7 +37,7 @@ const Game = () => {
         setTimeout(() => {
             axios.get(API_BASE+"/users/").then(res => {
                 bets.forEach(x => {
-                    var u = res.data.find(y => y._id==x.id)
+                    var u = res.data.find(y => y._id===x.id)
                     u.money+=x.amount
                     axios.put(API_BASE+"/users/"+u._id,u)
                 })
@@ -57,14 +46,14 @@ const Game = () => {
 
     }
 
-    function reload() {
+    function reLoad() {
         payBets(bets)
         window.location.reload()
     }
     
     window.onload = function () {
         var minutes = 60 * 3,
-            display = document.querySelector('#time');
+            display = document.getElementById('time');
         startTimer(minutes, display);
     };
 
@@ -157,7 +146,7 @@ const Game = () => {
                 <h5>Siguiente juego automático en: </h5>
                 <h5 id="time">###</h5>
                 {
-                    load ? reload():''
+                    load ? reLoad():''
                 }
             </div>
         </div>
