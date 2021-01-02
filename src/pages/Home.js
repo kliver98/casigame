@@ -10,7 +10,6 @@ const Home = () => {
     const [reload,setReload] = useState(Date.now);
 
     useEffect(() => {
-        console.log("Hola")
         axios.get(API_BASE+"/users").then(response => {
             if (response.status === 200) {
                 setUsers(response.data);
@@ -20,7 +19,6 @@ const Home = () => {
     },[reload]);
 
     function changeReload() {
-        console.log("jlklk")
         setReload(Date.now)
     }
 

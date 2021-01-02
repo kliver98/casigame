@@ -1,12 +1,13 @@
 import React, {useState} from 'react'
 import axios from 'axios'
 import {API_BASE,MIN_BET} from '../actions/constants'
+import {formatmoney} from '../util/functions'
 
 const Game = (props) => {
 
     let {users,reload} = props
     const [load, setLoad] = useState(false);
-    const [message, setMessage] = useState('');
+    const [message, setMessage] = useState([]);
     const [bets, setBets] = useState([]);
 
     function startTimer(duration, display) {
@@ -47,7 +48,7 @@ const Game = (props) => {
     }
 
     function reLoad() {
-        payBets(bets)
+        //payBets(bets)
         window.location.reload()
     }
     
@@ -64,9 +65,9 @@ const Game = (props) => {
         return true
     }
 
-    function showMessage(message, time) {
-        setMessage(message)
-        setTimeout(() => setMessage(''),time)
+    function showMessage(message, type, time = 3000) {
+        setMessage([message,type])
+        setTimeout(() => setMessage([]),time)
     }
 
     function betFunction() {
@@ -82,16 +83,17 @@ const Game = (props) => {
                 var user = response.data
                 if (response.status===200 && user) {
                     if (user.money>MIN_BET) {
-                        bet.amount = (user.money*bet.amount)/100
+                        bet.amount = Math.floor((user.money*bet.amount)/100)
+                        showMessage('Información: Se apostara $ '+formatmoney(bet.amount)+' [Id: '+bet.id+']', 'success')
                     }else {
                         if (user.money>0) {
                             bet.amount = user.money
-                            showMessage('Advertencia: Se apostara ALL IN [MIN: '+MIN_BET+']',3000)
+                            showMessage('Advertencia: Se apostara ALL IN [MIN: '+MIN_BET+']', 'warning')
                         } else
-                            showMessage('Error: no tiene fondos suficientes [dinero: '+user.money+']',3000)
+                            showMessage('Error: no tiene fondos suficientes [dinero: '+user.money+']','danger')
                     }
                 } else {
-                    showMessage('Error: no se encontro usuario. Verifique id ['+bet.id+']',3000)
+                    showMessage('Error: no se encontro usuario. Verifique id ['+bet.id+']','danger')
                 }
             }).then(() => {
                 if (bet.amount>100) {
@@ -99,7 +101,7 @@ const Game = (props) => {
                 }
             })
         }else {
-            showMessage('Error: hay campos incorrectos ',3000)
+            showMessage('Error: hay campos incorrectos','danger')
         }
     }
 
@@ -107,8 +109,8 @@ const Game = (props) => {
         <div className="container mt-3 pt-2 pb-2" style={{background:"gainsboro"}}>
             {
                 message ? 
-                <div id="messagePropmt" className="alert alert-danger" role="alert">
-                    {message}
+                <div id="messagePropmt" className={"alert alert-"+message[1]} role="alert">
+                    {message[0]}
                 </div>
                 :''
             }
