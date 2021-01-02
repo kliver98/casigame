@@ -5,7 +5,7 @@ import {formatmoney} from '../util/functions'
 
 const Game = (props) => {
 
-    let {users,reload} = props
+    let {users} = props
     const [load, setLoad] = useState(false);
     const [message, setMessage] = useState([]);
     const [bets, setBets] = useState([]);
@@ -28,27 +28,33 @@ const Game = (props) => {
         }, 1000);
     }
 
-    function payBets(bets) {
+    function payBets() {
         var random = Math.round(Math.random() * 3)
         random = random===1 ? 'red' : random===2 ? 'green' : 'black'
-        bets = bets.filter(bet => bet.mode===random).forEach(bet => {
+        let betsTmp = bets.filter(bet => {
+            console.log(bet,random,bet.mode===random)
+            return bet.mode===random
+        })
+        if (betsTmp===undefined || betsTmp===null)
+            return
+        betsTmp.forEach(bet => {
             var amount = random==='green' ? bet.amount*10:bet.amount*2
             bet.amount = amount
         });
-        setTimeout(() => {
-            axios.get(API_BASE+"/users/").then(res => {
-                bets.forEach(x => {
-                    var u = res.data.find(y => y._id===x.id)
-                    u.money+=x.amount
-                    axios.put(API_BASE+"/users/"+u._id,u)
-                })
+        axios.get(API_BASE+"/users/").then(res => {
+            betsTmp.forEach(x => {
+                console.log('Jeje')
+                var u = res.data.find(y => y._id===parseInt(x.id))
+                console.log('U: ',u)
+                u.money+=x.amount
+                console.log('Money mod: ',u.money)
+                axios.put(API_BASE+"/users/"+u._id,u)
             })
-        },500)
-
+        })
     }
 
     function reLoad() {
-        //payBets(bets)
+        payBets()
         window.location.reload()
     }
     
@@ -84,7 +90,7 @@ const Game = (props) => {
                 if (response.status===200 && user) {
                     if (user.money>MIN_BET) {
                         bet.amount = Math.floor((user.money*bet.amount)/100)
-                        showMessage('Información: Se apostara $ '+formatmoney(bet.amount)+' [Id: '+bet.id+']', 'success')
+                        showMessage('Se apostara $ '+formatmoney(bet.amount)+' [Id: '+bet.id+'] para '+bet.mode, 'success')
                     }else {
                         if (user.money>0) {
                             bet.amount = user.money
@@ -107,13 +113,6 @@ const Game = (props) => {
 
     return (
         <div className="container mt-3 pt-2 pb-2" style={{background:"gainsboro"}}>
-            {
-                message ? 
-                <div id="messagePropmt" className={"alert alert-"+message[1]} role="alert">
-                    {message[0]}
-                </div>
-                :''
-            }
             <div className="col-12">
                 <select className="form-select" id="user" aria-label="Select user">
                 <option defaultValue>Seleccione usuario</option>
@@ -151,6 +150,13 @@ const Game = (props) => {
                     load ? reLoad():''
                 }
             </div>
+            {
+                message ? 
+                <div id="messagePropmt" className={"alert alert-"+message[1]} role="alert">
+                    {message[0]}
+                </div>
+                :''
+            }
         </div>
     )
 }

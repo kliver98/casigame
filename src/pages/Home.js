@@ -32,7 +32,7 @@ const Home = () => {
                         <br></br>
                         <br></br>
                         <br></br>
-                        <Game users={users} reload={changeReload}></Game>
+                        <Game users={users}></Game>
                         </div>
                         {
                             false ? 
