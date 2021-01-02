@@ -1,8 +1,8 @@
 {
   "files": {
     "main.css": "/casigame/static/css/main.2ae47eeb.chunk.css",
-    "main.js": "/casigame/static/js/main.39ecf833.chunk.js",
-    "main.js.map": "/casigame/static/js/main.39ecf833.chunk.js.map",
+    "main.js": "/casigame/static/js/main.e7627838.chunk.js",
+    "main.js.map": "/casigame/static/js/main.e7627838.chunk.js.map",
     "runtime-main.js": "/casigame/static/js/runtime-main.68d3f03d.js",
     "runtime-main.js.map": "/casigame/static/js/runtime-main.68d3f03d.js.map",
     "static/js/2.3ef10333.chunk.js": "/casigame/static/js/2.3ef10333.chunk.js",
@@ -17,6 +17,6 @@
     "static/js/runtime-main.68d3f03d.js",
     "static/js/2.3ef10333.chunk.js",
     "static/css/main.2ae47eeb.chunk.css",
-    "static/js/main.39ecf833.chunk.js"
+    "static/js/main.e7627838.chunk.js"
   ]
 }
