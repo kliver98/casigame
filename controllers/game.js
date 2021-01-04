@@ -72,6 +72,7 @@ exports.lastRegisters = function (req, res, next) {
 exports.generate = function (req, res, next) {
 
     var random = getRandom()
+    res.status(200)
     res.json({random:random})
 
 }
