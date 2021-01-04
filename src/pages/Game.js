@@ -3,12 +3,13 @@ import axios from 'axios'
 import {API_BASE,MIN_BET} from '../actions/constants'
 import {formatmoney} from '../util/functions'
 
+let bets = [];
+
 const Game = (props) => {
 
     let {users} = props
     const [color,setColor] = useState('color')
     const [message, setMessage] = useState([]);
-    const [bets, setBets] = useState([]);
 
     function startTimer(duration, display) {
         var timer = duration, minutes, seconds;
@@ -39,6 +40,7 @@ const Game = (props) => {
             var random = data.data.random
             setColor(random)
             var date = Date.now()
+            console.log(bets,'Hello')
             bets.forEach(bet => {
                 var amount = random==='green' ? bet.amount*10:bet.amount*2
                 let game = {
@@ -48,10 +50,10 @@ const Game = (props) => {
                     mode: bet.mode,
                     payed:amount
                 }
-                axios.put(API_BASE+"/users/"+game.id,game)
+                axios.put(API_BASE+"/games/"+game.id,game).then(x => console.log(x))
             })
         })
-        setBets([])
+        setTimeout(() => {bets = []},800)
     }
 
     function checkFileds(bet) {
@@ -93,12 +95,13 @@ const Game = (props) => {
                 }
             }).then(() => {
                 if (bet.amount>100) {
-                    setBets(prev => [...prev, bet])
+                    bets.push(bet)
                 }
             })
         }else {
             showMessage('Error: hay campos incorrectos','danger')
         }
+        console.log(bets)
     }
 
     function returnrow(id, amount, mode,payed) {
