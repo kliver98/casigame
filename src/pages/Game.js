@@ -6,7 +6,7 @@ import {formatmoney} from '../util/functions'
 const Game = (props) => {
 
     let {users} = props
-    let time = []
+    const [color,setColor] = useState('color')
     const [message, setMessage] = useState([]);
     const [bets, setBets] = useState([]);
 
@@ -21,7 +21,6 @@ const Game = (props) => {
             
             display.textContent = minutes + ":" + seconds;
             
-            time = [minutes,seconds]
             if (--timer < 0) { //When time it's over
                 timer = duration;
                 payBets();
@@ -36,25 +35,20 @@ const Game = (props) => {
     };
 
     function payBets() {
-        var random = Math.round(Math.random() * 3)
-        random = random===1 ? 'red' : random===2 ? 'green' : 'black'
-        let betsTmp = bets.filter(bet => {
-            return bet.mode===random
-        })
-        if (betsTmp===undefined || betsTmp===null)
-            return
-        betsTmp.forEach(bet => {
-            var amount = random==='green' ? bet.amount*10:bet.amount*2
-            bet.amount = amount
-        });
-        axios.get(API_BASE+"/users/").then(res => {
-            betsTmp.forEach(x => {
-                console.log('Jeje')
-                var u = res.data.find(y => y._id===parseInt(x.id))
-                console.log('U: ',u)
-                u.money+=x.amount
-                console.log('Money mod: ',u.money)
-                axios.put(API_BASE+"/users/"+u._id,u)
+        axios.get(API_BASE+"/games/generate-random").then(data => {
+            var random = data.data.random
+            setColor(random)
+            var date = Date.now()
+            bets.forEach(bet => {
+                var amount = random==='green' ? bet.amount*10:bet.amount*2
+                let game = {
+                    date: date,
+                    id: bet.id,
+                    amount:bet.amount+amount,
+                    mode: bet.mode,
+                    payed:amount
+                }
+                axios.put(API_BASE+"/users/"+game.id,game)
             })
         })
         setBets([])
@@ -107,6 +101,17 @@ const Game = (props) => {
         }
     }
 
+    function returnrow(id, amount, mode,payed) {
+        return (
+            <tr key={id}>
+                <th scope="row">{id}</th>
+                <td>{formatmoney(amount)}</td>
+                <td>{mode}</td>
+                <td>{formatmoney(payed)}</td>
+            </tr>
+        )
+    }
+
     return (
         <div className="container mt-3 pt-2 pb-2" style={{background:"gainsboro"}}>
             <div className="col-12">
@@ -151,8 +156,8 @@ const Game = (props) => {
                 :''
             }
             <div className="col-12">
-                <h5>Último juego [Color: color]: </h5>
-                <table id="lastBet" class="table table-striped">
+                <h5>Último juego [Color: {color}] </h5>
+                <table id="lastBet" className="table table-striped">
                     <thead>
                         <tr>
                         <th scope="col">ID</th>
