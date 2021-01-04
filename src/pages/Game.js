@@ -40,7 +40,6 @@ const Game = (props) => {
             var random = data.data.random
             setColor(random)
             var date = Date.now()
-            console.log(bets,'Hello')
             bets.forEach(bet => {
                 var amount = random==='green' ? bet.amount*10:bet.amount*2
                 let game = {
@@ -50,7 +49,7 @@ const Game = (props) => {
                     mode: bet.mode,
                     payed:amount
                 }
-                axios.put(API_BASE+"/games/"+game.id,game).then(x => console.log(x))
+                axios.post(API_BASE+"/games",game).then(x => console.log(x))
             })
         })
         setTimeout(() => {bets = []},800)
@@ -101,7 +100,6 @@ const Game = (props) => {
         }else {
             showMessage('Error: hay campos incorrectos','danger')
         }
-        console.log(bets)
     }
 
     function returnrow(id, amount, mode,payed) {
