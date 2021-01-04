@@ -50,11 +50,11 @@ const Users = (props) => {
                         <th scope="col">Dinero disponible</th>
                         <th scope="col">Opciones</th>
                         </tr>
+                    </thead>
+                    <tbody>
                         {
                             users.map(user => returnrow(user.username, user._id, user.money))
                         }
-                    </thead>
-                    <tbody>
                     </tbody>
                 </table>
                 : !create ? 'No hay usuarios para mostrar':<UserCreate reload={reload}></UserCreate>

@@ -34,12 +34,6 @@ const Home = () => {
                         <br></br>
                         <Game users={users}></Game>
                         </div>
-                        {
-                            false ? 
-                            <div className="col-12 bg-success">
-                            <h3>Ruleta</h3>
-                            </div> : <br></br>
-                        }
                     </div>
                 </div>
                 <div className="col-5 text-center">

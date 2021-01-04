@@ -30,17 +30,15 @@ const Game = (props) => {
     }
 
     window.onload = function () {
-        var minutes = 30,//60 * 3,
+        var minutes = 10,//60 * 3,
             display = document.getElementById('time');
         startTimer(minutes, display);
     };
 
     function payBets() {
-        console.log('paying >')
         var random = Math.round(Math.random() * 3)
         random = random===1 ? 'red' : random===2 ? 'green' : 'black'
         let betsTmp = bets.filter(bet => {
-            console.log(bet,random,bet.mode===random)
             return bet.mode===random
         })
         if (betsTmp===undefined || betsTmp===null)
@@ -143,7 +141,7 @@ const Game = (props) => {
             <br></br>
             <div className="col-12">
                 <h5>Siguiente juego automático en: </h5>
-                <h5 id="time">###</h5>
+                <h5 id="time"></h5>
             </div>
             {
                 message ? 
@@ -152,6 +150,22 @@ const Game = (props) => {
                 </div>
                 :''
             }
+            <div className="col-12">
+                <h5>Último juego [Color: color]: </h5>
+                <table id="lastBet" class="table table-striped">
+                    <thead>
+                        <tr>
+                        <th scope="col">ID</th>
+                        <th scope="col">Cantidad Apostada</th>
+                        <th scope="col">Modo</th>
+                        <th scope="col">Pago</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+                    </tbody>
+                </table>
+            </div>
         </div>
     )
 }
