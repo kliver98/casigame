@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useState,useEffect} from 'react'
 import axios from 'axios'
 import {API_BASE,MIN_BET} from '../actions/constants'
 import {formatmoney} from '../util/functions'
@@ -8,8 +8,18 @@ let bets = [];
 const Game = (props) => {
 
     let {users} = props
-    const [color,setColor] = useState('color')
+    const [color,setColor] = useState('...cargando')
     const [message, setMessage] = useState([]);
+    const [last,setLast] = useState([]);
+
+    useEffect(() => {
+        axios.get(API_BASE+"/games/last").then(response => {
+            if (response.status === 200) {
+                setLast(response.data);
+            }
+          }
+            );
+    },[color]);
 
     function startTimer(duration, display) {
         var timer = duration, minutes, seconds;
@@ -38,6 +48,7 @@ const Game = (props) => {
     function payBets() {
         axios.get(API_BASE+"/games/generate-random").then(data => {
             var random = data.data.random
+            setColor(random+"-"+Math.random())
             setColor(random)
             var date = Date.now()
             bets.forEach(bet => {
@@ -49,7 +60,7 @@ const Game = (props) => {
                     mode: bet.mode,
                     payed:amount
                 }
-                axios.post(API_BASE+"/games",game).then(x => console.log(x))
+                axios.post(API_BASE+"/games",game)
             })
         })
         setTimeout(() => {bets = []},800)
@@ -157,7 +168,7 @@ const Game = (props) => {
                 :''
             }
             <div className="col-12">
-                <h5>Último juego [Color: {color}] </h5>
+                <h5>Último juego [Color: {color}]</h5>
                 <table id="lastBet" className="table table-striped">
                     <thead>
                         <tr>
@@ -168,7 +179,9 @@ const Game = (props) => {
                         </tr>
                     </thead>
                     <tbody>
-                        
+                        {
+                            last.map(game => returnrow(game.id, game.amount, game.mode, game.payed))
+                        }
                     </tbody>
                 </table>
             </div>
