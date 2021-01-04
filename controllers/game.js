@@ -68,3 +68,17 @@ exports.lastRegisters = function (req, res, next) {
         }
     })
 }
+
+exports.generate = function (req, res, next) {
+
+    var random = getRandom()
+    res.send(random)
+
+}
+
+function getRandom(){
+    var num=Math.random();
+    if(num <= 0.01) return 'green';
+    else if(num <= 0.505) return 'red';
+    else return 'black';
+  }
