@@ -5,21 +5,23 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema;
 
 let GameSchema = Schema ({
-    type: {
+    date: {
+        type: Date,
+        required: true,
+    },
+    id: {
+        type: Number,
+        required: true,
+    },
+    amount: {
+        type: Number,
+        required: true,
+    },
+    mode: {
         type: String,
-        default: 'Default: Roulette',
-        max: 50
+        required: true,
     },
-    name: {
-        type: String,
-        default: Date.now,
-        max: 150
-    },
-    game_users: {
-        type: [Number],
-        default: []
-    },
-    money: {
+    payed: {
         type: Number,
         required: true,
     }

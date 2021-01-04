@@ -15,17 +15,17 @@ exports.index = function (req, res, next) {
 
 exports.create = function(req, res, next) {
     let game = new Game({
-        type: req.body.type,
-        name: req.body.name,
-        game_users: req.body.game_users,
-        money: req.body.money
+        id: req.body.id,
+        amount: req.body.amount,
+        mode: req.body.mode,
+        payed: req.body.payed
     });
 
     game.save(err => {
         if (err)
             return next(err)
         res.status(201)
-        res.send("Game ["+game.name+"] created successfully")
+        res.send("Game ["+game._id+"/"+game.date+"] created successfully")
     })
 }
 
@@ -46,4 +46,25 @@ exports.show = function (req, res, next) {
             res.status(200).json(games)
     })
         
+}
+
+exports.lastRegisters = function (req, res, next) {
+
+    Game.find().limit(1).sort({$natural:-1}).then((game,err) => {
+        if (err)
+            res.status(204).json(game)
+        else {
+            let lastDate = game[0].date
+            Game.find({"date":lastDate}).then((games, err) => {
+                if (err) {
+                    res.status(500)
+                    return next(err)
+                }
+                if (games.length===0)
+                    res.status(204).json(games)
+                else
+                    res.status(200).json(games)
+            })
+        }
+    })
 }
