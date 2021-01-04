@@ -2,11 +2,10 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import routes from "./routes";
-import { Provider } from 'react-redux'
-import user from './reducers/user'
-import store from './redux/store'
 import { BrowserRouter as Router } from "react-router-dom";
 import reportWebVitals from './reportWebVitals';
+/*import { Provider } from 'react-redux'
+import user from './reducers/user'
 import { createStore, applyMiddleware, combineReducers } from 'redux';
 import ReduxPromise from 'redux-promise';
 
@@ -14,12 +13,12 @@ const reducer = combineReducers({
   user
 });
 
-const createStoreWithMiddleware = applyMiddleware(ReduxPromise)(createStore);
+const createStoreWithMiddleware = applyMiddleware(ReduxPromise)(createStore);*/
 
 ReactDOM.render(
-  <Provider store={createStoreWithMiddleware(reducer)}>
+  <>
     <Router>{routes}</Router>
-  </Provider>,
+  </>,
   document.getElementById('root')
 );
 

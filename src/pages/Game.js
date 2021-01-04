@@ -6,7 +6,7 @@ import {formatmoney} from '../util/functions'
 const Game = (props) => {
 
     let {users} = props
-    const [load, setLoad] = useState(false);
+    let time = []
     const [message, setMessage] = useState([]);
     const [bets, setBets] = useState([]);
 
@@ -15,20 +15,28 @@ const Game = (props) => {
         setInterval(function () {
             minutes = parseInt(timer / 60, 10);
             seconds = parseInt(timer % 60, 10);
-    
+            
             minutes = minutes < 10 ? "0" + minutes : minutes;
             seconds = seconds < 10 ? "0" + seconds : seconds;
-    
+            
             display.textContent = minutes + ":" + seconds;
-    
+            
+            time = [minutes,seconds]
             if (--timer < 0) { //When time it's over
                 timer = duration;
-                setLoad(!load)
-            }
+                payBets();
+            }  
         }, 1000);
     }
 
+    window.onload = function () {
+        var minutes = 30,//60 * 3,
+            display = document.getElementById('time');
+        startTimer(minutes, display);
+    };
+
     function payBets() {
+        console.log('paying >')
         var random = Math.round(Math.random() * 3)
         random = random===1 ? 'red' : random===2 ? 'green' : 'black'
         let betsTmp = bets.filter(bet => {
@@ -51,18 +59,8 @@ const Game = (props) => {
                 axios.put(API_BASE+"/users/"+u._id,u)
             })
         })
+        setBets([])
     }
-
-    function reLoad() {
-        payBets()
-        window.location.reload()
-    }
-    
-    window.onload = function () {
-        var minutes = 60 * 3,
-            display = document.getElementById('time');
-        startTimer(minutes, display);
-    };
 
     function checkFileds(bet) {
         var color = bet.mode==='red' || bet.mode==='green' || bet.mode==='black'
@@ -146,9 +144,6 @@ const Game = (props) => {
             <div className="col-12">
                 <h5>Siguiente juego automático en: </h5>
                 <h5 id="time">###</h5>
-                {
-                    load ? reLoad():''
-                }
             </div>
             {
                 message ? 
