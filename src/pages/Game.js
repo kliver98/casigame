@@ -8,7 +8,7 @@ let bets = [];
 const Game = (props) => {
 
     let {users} = props
-    const [color,setColor] = useState('...cargando')
+    const [color,setColor] = useState('')
     const [message, setMessage] = useState([]);
     const [last,setLast] = useState([]);
 
@@ -40,7 +40,7 @@ const Game = (props) => {
     }
 
     window.onload = function () {
-        var minutes = 10,//60 * 3,
+        var minutes = 60 * 3,
             display = document.getElementById('time');
         startTimer(minutes, display);
     };
@@ -48,10 +48,10 @@ const Game = (props) => {
     function payBets() {
         axios.get(API_BASE+"/games/generate-random").then(data => {
             var random = data.data.random
-            setColor(random+"-"+Math.random())
-            setColor(random)
             var date = Date.now()
             bets.forEach(bet => {
+                setColor(random+Math.random())
+                setColor(random)
                 var amount = random==='green' ? bet.amount*10:bet.amount*2
                 let game = {
                     date: date,
@@ -61,9 +61,19 @@ const Game = (props) => {
                     payed:amount
                 }
                 axios.post(API_BASE+"/games",game)
+                axios.get(API_BASE+"/users/"+game.id).then(res => {
+                    if (res.status<200 || res.status>=300)
+                            showMessage('Error: No se pudo pagar ['+game.amount+'] a ['+game.id+']', 'danger')
+                    var g = res.data
+                    g.amount = game.amount
+                    axios.put(API_BASE+"/users/"+game.id,g).then(r => {
+                        if (r.status<200 || r.status>=300)
+                            showMessage('Error: No se pudo pagar ['+game.amount+'] a ['+game.id+']', 'danger')
+                    })
+                })
             })
         })
-        setTimeout(() => {bets = []},800)
+        setTimeout(() => {bets = []},500)
     }
 
     function checkFileds(bet) {
@@ -145,9 +155,9 @@ const Game = (props) => {
                 <label className="control-label"  htmlFor="betMode">Modo apuesta</label>
                 <div className="controls">
                     <select className="form-select" id="mode" aria-label="Color">
-                    <option value="green">Verde - 1%</option>
-                    <option value="red">Rojo - 49.5%</option>
-                    <option value="black">Negro - 49.5%</option>
+                    <option value="green">Green - 1%</option>
+                    <option value="red">Red - 49.5%</option>
+                    <option value="black">Black - 49.5%</option>
                     </select>
                 </div>
             </div>
@@ -158,7 +168,7 @@ const Game = (props) => {
             <br></br>
             <div className="col-12">
                 <h5>Siguiente juego automático en: </h5>
-                <h5 id="time"></h5>
+                <h5 id="time"> 00:00 </h5>
             </div>
             {
                 message ? 
@@ -167,7 +177,7 @@ const Game = (props) => {
                 </div>
                 :''
             }
-            <div className="col-12">
+            <div className="col-12" style={{display:color ? '':'none',color:'DarkSlateGray'}}>
                 <h5>Último juego [Color: {color}]</h5>
                 <table id="lastBet" className="table table-striped">
                     <thead>
