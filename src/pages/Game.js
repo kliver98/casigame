@@ -9,6 +9,7 @@ const Game = (props) => {
 
     let {users} = props
     const [color,setColor] = useState('')
+    const [reload,setReload] = useState(false)
     const [message, setMessage] = useState([]);
     const [last,setLast] = useState([]);
 
@@ -16,10 +17,11 @@ const Game = (props) => {
         axios.get(API_BASE+"/games/last").then(response => {
             if (response.status === 200) {
                 setLast(response.data);
+                setColor(response.data[0].winner)
             }
           }
             );
-    },[color]);
+    },[reload]);
 
     function startTimer(duration, display) {
         var timer = duration, minutes, seconds;
@@ -50,10 +52,9 @@ const Game = (props) => {
             var random = data.data.random
             var date = Date.now()
             bets.forEach(bet => {
-                setColor(random+Math.random())
-                setColor(random)
                 var amount = random==='green' ? bet.amount*10:bet.amount*2
                 let game = {
+                    winner: random,
                     date: date,
                     id: bet.id,
                     amount:bet.amount+amount,
@@ -72,6 +73,7 @@ const Game = (props) => {
                     })
                 })
             })
+            setReload(!reload)
         })
         setTimeout(() => {bets = []},500)
     }
@@ -177,7 +179,7 @@ const Game = (props) => {
                 </div>
                 :''
             }
-            <div className="col-12" style={{display:color ? '':'none',color:'DarkSlateGray'}}>
+            <div className="col-12" style={{color:'DarkSlateGray'}}>
                 <h5>Último juego [Color: {color}]</h5>
                 <table id="lastBet" className="table table-striped">
                     <thead>
