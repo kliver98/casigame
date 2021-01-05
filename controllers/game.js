@@ -15,6 +15,7 @@ exports.index = function (req, res, next) {
 
 exports.create = function(req, res, next) {
     let game = new Game({
+        winner: req.body.winner,
         date: req.body.date,
         id: req.body.id,
         amount: req.body.amount,

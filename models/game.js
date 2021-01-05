@@ -5,6 +5,9 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema;
 
 let GameSchema = Schema ({
+    winner: {
+        type: String,
+    },
     date: {
         type: Date,
         required: true,
@@ -16,6 +19,7 @@ let GameSchema = Schema ({
     amount: {
         type: Number,
         required: true,
+        min: 0
     },
     mode: {
         type: String,
