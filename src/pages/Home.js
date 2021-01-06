@@ -25,7 +25,7 @@ const Home = () => {
     return (
         <div className="pl-4 pr-4 pt-3">
             <div className="row">
-                <div className="col-7 text-center">
+                <div className="col-lg-7 col-sm-12 text-center">
                     <div className="row">
                         <div className="col-12">
                         <h2>Juego</h2>
@@ -36,7 +36,7 @@ const Home = () => {
                         </div>
                     </div>
                 </div>
-                <div className="col-5 text-center">
+                <div className="col-lg-5 col-sm-12 text-center">
                     <h2>Gestión de usuarios</h2>
                     <br></br>
                     <User users={users} reload={changeReload}></User>

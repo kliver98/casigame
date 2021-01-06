@@ -42,7 +42,7 @@ const Game = (props) => {
     }
 
     window.onload = function () {
-        var minutes = 15,//60 * 3,
+        var minutes = 60 * 3,
             display = document.getElementById('time');
         startTimer(minutes, display);
     };
