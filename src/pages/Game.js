@@ -34,7 +34,7 @@ const Game = (props) => {
             
             display.textContent = minutes + ":" + seconds;
             
-            if (--timer < 0) { //When time it's over
+            if (--timer < 0) {
                 timer = duration;
                 payBets();
             }  
@@ -42,7 +42,7 @@ const Game = (props) => {
     }
 
     window.onload = function () {
-        var minutes = 60 * 3,
+        var minutes = 15,//60 * 3,
             display = document.getElementById('time');
         startTimer(minutes, display);
     };
@@ -52,12 +52,12 @@ const Game = (props) => {
             var random = data.data.random
             var date = Date.now()
             bets.forEach(bet => {
-                var amount = random==='green' ? bet.amount*10:bet.amount*2
+                var amount = random!==bet.mode ? bet.amount*(-1) : random==='green' ? bet.amount*10:bet.amount*2
                 let game = {
                     winner: random,
                     date: date,
                     id: bet.id,
-                    amount:bet.amount+amount,
+                    amount:bet.amount,
                     mode: bet.mode,
                     payed:amount
                 }
@@ -66,11 +66,12 @@ const Game = (props) => {
                     if (res.status<200 || res.status>=300)
                             showMessage('Error: No se pudo pagar ['+game.amount+'] a ['+game.id+']', 'danger')
                     var g = res.data
-                    g.amount = game.amount
+                    g.money = g.money+game.amount
                     axios.put(API_BASE+"/users/"+game.id,g).then(r => {
                         if (r.status<200 || r.status>=300)
                             showMessage('Error: No se pudo pagar ['+game.amount+'] a ['+game.id+']', 'danger')
                     })
+                    console.log('actualizando a:',g)
                 })
             })
             setReload(!reload)
