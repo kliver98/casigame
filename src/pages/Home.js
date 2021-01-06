@@ -32,7 +32,7 @@ const Home = () => {
                         <br></br>
                         <br></br>
                         <br></br>
-                        <Game users={users}></Game>
+                        <Game users={users} reloadUsers={changeReload}></Game>
                         </div>
                     </div>
                 </div>

@@ -7,7 +7,7 @@ let bets = [];
 
 const Game = (props) => {
 
-    let {users} = props
+    let {users,reloadUsers} = props
     const [color,setColor] = useState('')
     const [reload,setReload] = useState(false)
     const [message, setMessage] = useState([]);
@@ -66,15 +66,17 @@ const Game = (props) => {
                     if (res.status<200 || res.status>=300)
                             showMessage('Error: No se pudo pagar ['+game.amount+'] a ['+game.id+']', 'danger')
                     var g = res.data
-                    g.money = g.money+game.amount
+                    g.money = g.money+game.payed
                     axios.put(API_BASE+"/users/"+game.id,g).then(r => {
                         if (r.status<200 || r.status>=300)
                             showMessage('Error: No se pudo pagar ['+game.amount+'] a ['+game.id+']', 'danger')
                     })
-                    console.log('actualizando a:',g)
                 })
             })
-            setReload(!reload)
+            setTimeout(() => {
+                setReload(!reload)
+                reloadUsers()
+            }, 500);
         })
         setTimeout(() => {bets = []},500)
     }
